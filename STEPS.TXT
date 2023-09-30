@@ -1,0 +1,7 @@
+Create VM
+Install docker engine & add current user into docker group & start docker engine
+Create 3 repos on docker hub vprodb for mysql, vproweb-nginx, vproapp-tomcat
+mkdoir dockerfiles && mkdir -p app && cd app
+vim Dockerfile
+Must read db_backup.sql
+
