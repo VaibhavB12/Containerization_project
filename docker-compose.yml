@@ -1,0 +1,36 @@
+version: '3'
+services:
+  vprodb:  # name is based on given name in application.properties file
+    image: vaib1205/vprodb:V1
+    ports:
+      - "3306:3306"  # confirm port exposed or not by docker inspect vaib1205/vprodb:V1 | grep -C 5 "Exposed"
+    volumes: # docker inspect vaib1205/vprodb:V1 | grep -C 5 "Volumes"
+      - vprodbdata:/var/lib/mysql  # all the container data downloaded to this vprodbdata
+    environment:
+      - MYSQL_ROOT_PASSWORD=vprodbpass
+  vprocache01:
+    image: memcached
+    ports:
+      - "11211:11211"
+  vpromq01:
+    image: rabbitmq
+    ports:
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+  vproapp:
+    image: vaib1205/vproapp-tomcat:V1
+    ports:
+      -  "8080:8080"   
+    volumes:
+      - vproappdata:/usr/local/tomcat/webapps/
+  vproweb: #it is frontend We first access this container & then vproweb is going to forward the request to vproapp & vproapp is gonna refer backend containers
+    image: vaib1205/vproweb-nginx:V1
+    ports:
+      - "80:80"      
+volumes: 
+  vprodbdata: {}
+# local volume vprodbdata will be map to /var/lib/mysql of vprodb container   
+  vproappdata: {}
+# local volume vproappdata will be map to /usr/local/tomcat/webapps/ of vprodb container     
